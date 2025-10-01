@@ -4,14 +4,14 @@
 \alias{pop.evolution}
 \title{Population evolution}
 \usage{
-pop.evolution(g0, e, r.AM, nu, N, nb.gen)
+pop.evolution(g0, e, r.ho, nu, N, nb.gen)
 }
 \arguments{
 \item{g0}{Standard deviation of gametic value in a population without assortative mating}
 
 \item{e}{Standard deviation of environmental effects}
 
-\item{r.AM}{Correlation between mates (denoted \eqn{r_{ho}}{r_ho} in the paper)}
+\item{r.ho}{Correlation between mates}
 
 \item{nu}{Correlation between parents' and offspring environmental effects}
 
@@ -26,7 +26,7 @@ A data frame with class "pop.evolution", with columns
 'rho' (the gene-environment correlation, \eqn{\rho(t)}{rho(t)}), 'a' (the standard deviation of the genetic value, \eqn{g(t)}),
 and 'sigma2' (the variance of the phenotype, \eqn{sigma^2(t)}{sigma^2(t)}).
 
-The parameters 'g0', 'e', 'r.AM', 'nu' and 'N' are stored in an attribute named 'parameters'.
+The parameters 'g0', 'e', 'r.ho', 'nu' and 'N' are stored in an attribute named 'parameters'.
 }
 \description{
 Compute all parameters of the evolution of a population which is initially 

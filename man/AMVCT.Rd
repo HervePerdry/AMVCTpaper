@@ -4,7 +4,7 @@
 \alias{AMVCT}
 \title{Assortative Mating with Vertical Cultural Transmission}
 \usage{
-AMVCT(h2.0, g0 = sqrt(h2.0/2), e = sqrt(1 - h2.0), r.AM, nu)
+AMVCT(h2.0, g0 = sqrt(h2.0/2), e = sqrt(1 - h2.0), r.ho, nu)
 }
 \arguments{
 \item{h2.0}{Heritability in a population without assortative mating}
@@ -13,13 +13,13 @@ AMVCT(h2.0, g0 = sqrt(h2.0/2), e = sqrt(1 - h2.0), r.AM, nu)
 
 \item{e}{Standard deviation of environmental effects}
 
-\item{r.AM}{Correlation between mates (denoted \eqn{r_{ho}}{r_ho} in the paper)}
+\item{r.ho}{Correlation between mates}
 
 \item{nu}{Correlation between parents' and offspring environmental effects}
 }
 \value{
 an object of class 'AMVCT', which is a list with components
-'g0', 'e', 'r.AM', 'nu', 'rho', 'a, 'sigma2', 'r.ga', 'g', 'h2.SNP',
+'g0', 'e', 'r.ho', 'nu', 'rho', 'a, 'sigma2', 'r.ga', 'g', 'h2.SNP',
 'decompose.sigma2', 'cor.mates' (corresponding to table 1 of the supplementary material)
 'cor.parent.offspring' (corresponding to table 2 of the supplementary material)
 'cor.pheno.parent.offspring' (correlation of the phenotypes of parent and offspring).
@@ -28,12 +28,12 @@ an object of class 'AMVCT', which is a list with components
 Assortative Mating with Vertical Cultural Transmission
 }
 \details{
-The user must provide 'r.AM' and 'nu', and either 'g0' and 'e', or 'h2.0'. 
+The user must provide 'r.ho' and 'nu', and either 'g0' and 'e', or 'h2.0'. 
 The function will 
 compute the principal quantities of interest defined in the paper. A method is
 defined to have them printed nicely.
 }
 \examples{
-AMVCT(g0 = sqrt(0.5), e = 1, r = 0.6, nu = 0.4)
+AMVCT(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4)
 
 }

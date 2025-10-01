@@ -1,0 +1,20 @@
+#' @exportS3Method
+print.AMVCT <- function(x, ...) {
+  cat("Assortative mating and verticulal cultural transmission with parameters\n")
+  cat("g0 =", x$g0, "e = ", x$e, "r.ho = ", x$r.ho, "nu =", x$nu, "\n")
+  cat("Corresponding to an heritability without AM and VCT h²_0 =", 2*x$g0^2 /(2*x$g0^2 + x$e^2), "\n")
+  cat("----------------------------------------------------------------\n")
+  cat("Values at equilibrium:\n")
+  cat("Gametic correlation r_ga = ", x$r.ga, "\n") 
+  cat("Gametic effect g = ", x$g, "or g^2 =", x$g^2, "\n")
+  cat("Total additive effect a =", x$a, "or a^2 = ", x$a**2, "\n")
+  cat("Correlation (A, E) rho =", x$rho, "\n")
+  cat("Phenotype variance sigma^2 =", x$sigma2, "decomposing as\n")
+  print(x$decompose.sigma2)
+  cat("\nSNP-heritability h^2_SNP =", x$h2.SNP, "\n")
+  cat("\nCorrelations between mates\n")
+  print(x$cor.mates)
+  cat("\nCorrelations between parent and offspring\n")
+  print(x$cor.parent.offspring)
+  cat("\nLeading to a correlation between parent's and offspring phenotypes =", x$cor.pheno.parent.offspring, "\n")
+}

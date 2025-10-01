@@ -4,14 +4,14 @@
 \alias{solve.a.rho}
 \title{Solve a non-linear system of equation for 'a' and 'rho'}
 \usage{
-\method{solve}{a.rho}(g0, e, r.AM, nu)
+\method{solve}{a.rho}(g0, e, r.ho, nu)
 }
 \arguments{
 \item{g0}{Standard deviation of gametic value in a population without assortative mating}
 
 \item{e}{Standard deviation of environmental effects}
 
-\item{r.AM}{Correlation between mates (denoted \eqn{r_{ho}}{r_ho} in the paper)}
+\item{r.ho}{Correlation between mates}
 
 \item{nu}{Correlation between parents' and offspring environmental effects}
 }
@@ -19,15 +19,19 @@
 a vector with named components 'a' and 'rho'.
 }
 \description{
-given the natural parameters \eqn{g_0}{g0}, \eqn{e}, \eqn{r_{AM}}{r_AM} and \eqn{\nu}{nu},
+given the natural parameters \eqn{g_0}{g0}, \eqn{e}, \eqn{r_{AM}}{r.ho} and \eqn{\nu}{nu},
 computes \eqn{a} and \eqn{rho}.
 }
 \details{
-In the article text, 'r.AM' is denoted by \eqn{r_{ho}}{r_ho}.
+In the article text, 'r.ho' is denoted by \eqn{r_{ho}}{r_ho}.
 The system formed by the equations 41 and 42 from the supplementary material is solved
 to get the values of \eqn{a} and \eqn{\rho}{rho} at equilibrium.
 
 The system may have solutions even if the inequality ensuring that the environmental
 variance matrix of a trio is positive definite (equation 26). This inequality is tested, and
 if it is not verified, a warning is emitted and NAs are returned.
+}
+\examples{
+solve.a.rho(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4)
+
 }

@@ -4,7 +4,7 @@
 #' 
 #' @param g0           Standard deviation of gametic value in a population without assortative mating
 #' @param e            Standard deviation of environmental effects
-#' @param r.AM         Correlation between mates (denoted \eqn{r_{ho}}{r_ho} in the paper)
+#' @param r.ho         Correlation between mates 
 #' @param nu           Correlation between parents' and offspring environmental effects
 #' @param N            Number of causal variants 
 #' @param nb.gen       Number of generations
@@ -27,8 +27,8 @@
 #' generation), 'A' (the genetic value at the last generation), 'E' (the environmental value at the last 
 #' generation), 'P' (the phenotypes at the last generation).
 #'
-#' @examples R <- pop.sim(g0 = sqrt(0.5), e = 1, r = 0.6, nu = 0.4, 25000, N = 100, nb.gen = 20, TRUE, TRUE)
-#' ev <- pop.evolution(g0 = sqrt(0.5), e = 1, r = 0.6, nu = 0.4, N = 100, nb.gen = 20) 
+#' @examples R <- pop.sim(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, 25000, N = 100, nb.gen = 20, TRUE, TRUE)
+#' ev <- pop.evolution(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, N = 100, nb.gen = 20) 
 #' par(mfrow=c(2,2))
 #' plot(R$t, R$rho, type = "o", xlab = "t", ylab = "rho")
 #' lines(ev$t, ev$rho, col = "red")
@@ -40,7 +40,7 @@
 #' lines(ev$t, ev$r.ga, col =" red")
 #'
 #' @export
-pop.sim <- function(g0, e, r.AM, nu, N = 100, nb.gen = 10, pop.size = 25000, digest = TRUE, keep.N.kappa = FALSE) {
+pop.sim <- function(g0, e, r.ho, nu, N = 100, nb.gen = 10, pop.size = 25000, digest = TRUE, keep.N.kappa = FALSE) {
   # size must be even
   pop.size <- (as.integer(pop.size) %/% 2L) * 2L
 
@@ -74,17 +74,17 @@ pop.sim <- function(g0, e, r.AM, nu, N = 100, nb.gen = 10, pop.size = 25000, dig
 
   for(i in 1:nb.gen) {
     # make mate pairs
-    pairs <- mate.pairs(P, r.AM)
+    pairs <- mate.pairs(P, r.ho)
 
     # gametes for 1st offspring
     H1 <- gametes(G)
-    H1p <- H1[,pairs$I1] 
-    H1m <- H1[,pairs$I2]
+    H1p <- H1[, pairs$I1, drop = FALSE] 
+    H1m <- H1[, pairs$I2, drop = FALSE]
 
     # gametes for 2nd offspring
     H2 <- gametes(G)
-    H2p <- H2[,pairs$I1] 
-    H2m <- H2[,pairs$I2]
+    H2p <- H2[, pairs$I1, drop = FALSE] 
+    H2m <- H2[, pairs$I2, drop = FALSE]
 
     # new matrix of genotypes
     G <- cbind(H1p + H1m, H2p + H2m )
@@ -113,7 +113,8 @@ pop.sim <- function(g0, e, r.AM, nu, N = 100, nb.gen = 10, pop.size = 25000, dig
     gvH1m <- genomic.value(H1m, beta)
 
     if(keep.N.kappa) {
-      DEL <- cor(t(H1)) # in fact could also be cor(rbind(t(H1),t(H2))), but this is lighter
+      # DEL <- cor(t(H1)) # in fact could also be cor(rbind(t(H1),t(H2))), but this is lighter
+      DEL <- cor(rbind(t(H1), t(H2)))
       N.kappa <- sum(DEL)/N
     } else {
       N.kappa <- NA
@@ -123,7 +124,7 @@ pop.sim <- function(g0, e, r.AM, nu, N = 100, nb.gen = 10, pop.size = 25000, dig
   } 
 
   R <- cbind(t = 0:nb.gen, R)
-  attr(R, "parameters") <- c(g0 = g0, e = e, r.AM = r.AM, nu = nu, N = N, pop.size = pop.size)
+  attr(R, "parameters") <- c(g0 = g0, e = e, r.ho = r.ho, nu = nu, N = N, pop.size = pop.size)
   class(R) <- c("pop.evolution", "data.frame")
 
   if(digest) return(R)

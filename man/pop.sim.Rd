@@ -7,7 +7,7 @@
 pop.sim(
   g0,
   e,
-  r.AM,
+  r.ho,
   nu,
   N = 100,
   nb.gen = 10,
@@ -21,7 +21,7 @@ pop.sim(
 
 \item{e}{Standard deviation of environmental effects}
 
-\item{r.AM}{Correlation between mates (denoted \eqn{r_{ho}}{r_ho} in the paper)}
+\item{r.ho}{Correlation between mates}
 
 \item{nu}{Correlation between parents' and offspring environmental effects}
 
@@ -56,8 +56,8 @@ Beware: setting 'keep.N.kappa' to 'TRUE' results
 in lengthy computations.
 }
 \examples{
-R <- pop.sim(g0 = sqrt(0.5), e = 1, r = 0.6, nu = 0.4, 25000, N = 100, nb.gen = 20, TRUE, TRUE)
-ev <- pop.evolution(g0 = sqrt(0.5), e = 1, r = 0.6, nu = 0.4, N = 100, nb.gen = 20) 
+R <- pop.sim(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, 25000, N = 100, nb.gen = 20, TRUE, TRUE)
+ev <- pop.evolution(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, N = 100, nb.gen = 20) 
 par(mfrow=c(2,2))
 plot(R$t, R$rho, type = "o", xlab = "t", ylab = "rho")
 lines(ev$t, ev$rho, col = "red")

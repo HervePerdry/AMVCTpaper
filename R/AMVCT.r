@@ -3,29 +3,29 @@
 #' @param h2.0   Heritability in a population without assortative mating
 #' @param g0     Standard deviation of gametic value in a population without assortative mating
 #' @param e      Standard deviation of environmental effects
-#' @param r.AM   Correlation between mates (denoted \eqn{r_{ho}}{r_ho} in the paper)
+#' @param r.ho   Correlation between mates 
 #' @param nu     Correlation between parents' and offspring environmental effects
 #'
-#' @details The user must provide 'r.AM' and 'nu', and either 'g0' and 'e', or 'h2.0'. 
+#' @details The user must provide 'r.ho' and 'nu', and either 'g0' and 'e', or 'h2.0'. 
 #' The function will 
 #' compute the principal quantities of interest defined in the paper. A method is
 #' defined to have them printed nicely.
 #'
 #' @return an object of class 'AMVCT', which is a list with components
-#' 'g0', 'e', 'r.AM', 'nu', 'rho', 'a, 'sigma2', 'r.ga', 'g', 'h2.SNP',
+#' 'g0', 'e', 'r.ho', 'nu', 'rho', 'a, 'sigma2', 'r.ga', 'g', 'h2.SNP',
 #' 'decompose.sigma2', 'cor.mates' (corresponding to table 1 of the supplementary material)
 #' 'cor.parent.offspring' (corresponding to table 2 of the supplementary material)
 #' 'cor.pheno.parent.offspring' (correlation of the phenotypes of parent and offspring).
 #'
-#' @examples AMVCT(g0 = sqrt(0.5), e = 1, r = 0.6, nu = 0.4)
+#' @examples AMVCT(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4)
 #'
 #' @export
-AMVCT <- function(h2.0, g0 = sqrt(h2.0/2), e = sqrt(1 - h2.0), r.AM, nu) {
+AMVCT <- function(h2.0, g0 = sqrt(h2.0/2), e = sqrt(1 - h2.0), r.ho, nu) {
   if(!missing(h2.0)) {
     if(g0 != sqrt(h2.0/2) | e != sqrt(1-h2.0))
       stop("specify either h2.0 or g0, e")
   }  
-  x <- solve.a.rho(g0, e, r.AM, nu)
+  x <- solve.a.rho(g0, e, r.ho, nu)
   rho <- x["rho"]
   a <- x["a"]
 
@@ -35,8 +35,8 @@ AMVCT <- function(h2.0, g0 = sqrt(h2.0/2), e = sqrt(1 - h2.0), r.AM, nu) {
 
   # correlation of mates  
   C1 <- matrix( c(1, rho, rho, 1), 2, 2)
-  C2 <- matrix( c(r.AM*(a + rho*e)**2 / sigma2,        r.AM*(a + rho*e)*(rho*a + e)/sigma2, 
-                  r.AM*(a + rho*e)*(rho*a + e)/sigma2, r.AM*(rho*a + e)**2 / sigma2), 
+  C2 <- matrix( c(r.ho*(a + rho*e)**2 / sigma2,        r.ho*(a + rho*e)*(rho*a + e)/sigma2, 
+                  r.ho*(a + rho*e)*(rho*a + e)/sigma2, r.ho*(rho*a + e)**2 / sigma2), 
                2, 2)
   cor.mates <- rbind( cbind(C1,C2), cbind(C2, C1))
   rownames(cor.mates) <- colnames(cor.mates) <- c("A1", "E1", "A2", "E2")
@@ -54,7 +54,7 @@ AMVCT <- function(h2.0, g0 = sqrt(h2.0/2), e = sqrt(1 - h2.0), r.AM, nu) {
   h2.SNP <- (a + rho * e)**2/sigma2
   
   # correlations parent offspring
-cor.parent.offspring <- matrix( c( .5*(1 + cor.mates[1,3]), rho, 0.5*(cor.mates[2,1] + cor.mates[2,3]), nu) , 2,2 , byrow = TRUE)
+  cor.parent.offspring <- matrix( c( .5*(1 + cor.mates[1,3]), rho, 0.5*(cor.mates[2,1] + cor.mates[2,3]), nu) , 2,2 , byrow = TRUE)
   rownames(cor.parent.offspring) <- c("A1", "E1")
   colnames(cor.parent.offspring) <- c("A3", "E3")
 
@@ -63,26 +63,9 @@ cor.parent.offspring <- matrix( c( .5*(1 + cor.mates[1,3]), rho, 0.5*(cor.mates[
                                 cor.parent.offspring["E1", "A3"] * a*e + cor.parent.offspring["E1", "E3"] * e^2
   cor.pheno.parent.offspring <- cov.pheno.parent.offspring / sigma2
 
-  L <- list(g0 = g0, e = e, r.AM = r.AM, nu = nu, rho = rho, a = a, sigma2 = sigma2, r.ga = r.ga, g = g, h2.SNP = h2.SNP,
+  L <- list(g0 = g0, e = e, r.ho = r.ho, nu = nu, rho = rho, a = a, sigma2 = sigma2, r.ga = r.ga, g = g, h2.SNP = h2.SNP,
             decompose.sigma2 = decompose.sigma2, cor.mates = cor.mates, cor.parent.offspring = cor.parent.offspring,
             cor.pheno.parent.offspring = cor.pheno.parent.offspring)
   class(L) <- "AMVCT"
   L
-}
-
-#' @exportS3Method
-print.AMVCT <- function(x, ...) {
-  cat("Assortative mating with g0 =", x$g0, "e = ", x$e, "r.AM = ", x$r.AM, "nu =", x$nu, "\n")
-  cat("Gametic correlation at equilibrium : r_ga = ", x$r.ga, "\n") 
-  cat("Gametic effect : g = ", x$g, "or g^2 =", x$g^2, "\n")
-  cat("Total additive effect : a =", x$a, "or a^2 = ", x$a**2, "\n")
-  cat("Correlation (A, E) : rho =", x$rho, "\n")
-  cat("Phenotype variance : sigma^2 =", x$sigma2, "decomposing as\n")
-  print(x$decompose.sigma2)
-  cat("SNP-heritability : h^2_SNP =", x$h2.SNP, "\n")
-  cat("\nCorrelations between mates\n")
-  print(x$cor.mates)
-  cat("\nCorrelations between parent and offspring\n")
-  print(x$cor.parent.offspring)
-  cat("\nLeading to a correlation between parent's and offspring phenotypes =", x$cor.pheno.parent.offspring, "\n")
 }

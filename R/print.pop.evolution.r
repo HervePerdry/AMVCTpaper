@@ -1,4 +1,3 @@
-#'
 #' @exportS3Method print pop.evolution
 print.pop.evolution <- function(x) {
   p <- attr(x, "parameters")
