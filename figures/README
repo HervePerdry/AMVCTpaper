@@ -1,0 +1,10 @@
+This directory contains code for generating the figures of the paper.
+
+Running 'simus-50.r' will generate the files 'simus-50-N1000-pop100k.rds' 
+and 'simus-50-N1000-pop25k.rds' that are needed for some of the figures.
+
+Running 'figures-AMVCT-paper.r' will generate the files fig-*.tiff.
+
+The files 'multiple.pop.sim.r', 'fig.evol.r' and 'fig.nu.r' contain 
+functions definition that are needed by 'simus-50.r' and 'figures-AMVCT-paper.r'
+
