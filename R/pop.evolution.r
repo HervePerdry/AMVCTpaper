@@ -22,7 +22,7 @@
 #' @return The parameters 'g0', 'e', 'r.ho', 'nu' and 'N' are stored in an attribute named 'parameters'.
 #'
 #' @examples 
-#' pop.evolution(1, 1, 0.6, 0.2, Inf, 10)
+#' pop.evolution(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, N = 1e4, nb.gen = 10)
 #'
 #' @export
 pop.evolution <- function(g0, e, r.ho, nu, N, nb.gen) {

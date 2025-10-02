@@ -37,6 +37,6 @@ The details of the computation are given in the supplementary material of the pa
 in particular in appendix B.
 }
 \examples{
-pop.evolution(1, 1, 0.6, 0.2, Inf, 10)
+pop.evolution(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, N = 1e4, nb.gen = 10)
 
 }

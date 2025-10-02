@@ -27,17 +27,33 @@
 #' generation), 'A' (the genetic value at the last generation), 'E' (the environmental value at the last 
 #' generation), 'P' (the phenotypes at the last generation).
 #'
-#' @examples R <- pop.sim(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, 25000, N = 100, nb.gen = 20, TRUE, TRUE)
+#' @examples # a simulation with N = 100 loci only
+#' R <- pop.sim(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, pop.size = 25000, N = 100, nb.gen = 20, TRUE, TRUE)
+#' # theoretical evolution
 #' ev <- pop.evolution(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, N = 100, nb.gen = 20) 
+#' # theoretical equilibrium values
+#' limits <- AMVCT(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4)
+#'
 #' par(mfrow=c(2,2))
-#' plot(R$t, R$rho, type = "o", xlab = "t", ylab = "rho")
+#' # plotting evolution of rho
+#' plot(R$t, R$rho, type = "l", xlab = "t", ylab = expression(rho))
 #' lines(ev$t, ev$rho, col = "red")
+#' abline(h = limits$rho, col = "red", lty = 3)
+#'
+#' # plotting evolution of N kappa bar
 #' plot(R$t, R$N.kappa, type = "o", xlab = "t", ylab = expression(N * bar(kappa)))
 #' lines(ev$t, ev$N.kappa, col = "red")
+#' abline(h = 1/(1-limits$r.ga), col = "red", lty = 3)
+#'
+#' # plotting evolution of a
 #' plot(R$t, R$a, type = "o", xlab = "t", ylab = "a") 
 #' lines(ev$t, ev$a, col = "red")
+#' abline(h = limits$a, col = "red", lty = 3)
+#'
+#' # plotting evolution of r.ga
 #' plot(R$t, R$r.ga, type = "o", xlab = "t", ylab = expression(r[ga]))
 #' lines(ev$t, ev$r.ga, col =" red")
+#' abline(h = limits$r.ga, col = "red", lty = 3)
 #'
 #' @export
 pop.sim <- function(g0, e, r.ho, nu, N = 100, nb.gen = 10, pop.size = 25000, digest = TRUE, keep.N.kappa = FALSE) {

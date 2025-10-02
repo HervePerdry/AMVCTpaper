@@ -27,6 +27,9 @@ In the article text, 'r.ho' is denoted by \eqn{r_{ho}}{r_ho}.
 The system formed by the equations 41 and 42 from the supplementary material is solved
 to get the values of \eqn{a} and \eqn{\rho}{rho} at equilibrium.
 
+The equations are solved numerically using the 'uniroot' function with default
+parameters: the values obtained have a precision of roughly 1e-4.
+
 The system may have solutions even if the inequality ensuring that the environmental
 variance matrix of a trio is positive definite (equation 26). This inequality is tested, and
 if it is not verified, a warning is emitted and NAs are returned.

@@ -7,7 +7,7 @@
 #' @param nu     Correlation between parents' and offspring environmental effects
 #'
 #' @details The user must provide 'r.ho' and 'nu', and either 'g0' and 'e', or 'h2.0'. 
-#' The function will 
+#' The function will solve the non-linear system of equations with 'solve.a.rho', and
 #' compute the principal quantities of interest defined in the paper. A method is
 #' defined to have them printed nicely.
 #'
