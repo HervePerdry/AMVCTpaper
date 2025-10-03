@@ -1,12 +1,3 @@
----
-title: AMVTC
-author: Anthony Herzig and Hervé Perdry
-version: 0.1
-date: "2025-10-03"
----
-
-
-
 ## Installation
 
 The package can be installed directly from github, using either `devtools` or `remotes`:
@@ -226,7 +217,7 @@ lines(ev$t, ev$r.ga, col =" red")
 abline(h = limits$r.ga, col = "red", lty = 3)
 ```
 
-![plot of chunk plots](figure/plots-1.png)
+![plot](./figure/plots-1.png)
 
 #### Recreating the plots in the article
 
