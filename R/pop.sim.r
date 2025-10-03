@@ -10,7 +10,7 @@
 #' @param nb.gen       Number of generations
 #' @param pop.size     Population size
 #' @param digest       Logical. Set to 'TRUE' to send back only a digest of the results
-#' @param keep.N.kappa Logical. Set to 'TRUE' to keep trace of N kappa bar.
+#' @param keep.N.kappa Logical. Set to 'TRUE' to keep trace of \eqn{N\overline\kappa(t)}{N kappa bar}.
 #'
 #' @details Will simulate a population under Assortative Mating and Vertical Cultural Transmission with the parameters
 #' supplied. Generations are non overlapping.

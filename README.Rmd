@@ -1,0 +1,158 @@
+---
+title: AMVTC
+author: Anthony Herzig and Hervé Perdry
+version: 0.1
+date: "`r Sys.Date()`"
+---
+
+```{r, echo = FALSE}
+options(width = 90)
+```
+
+## Installation
+
+The package can be installed directly from github, using either `devtools` or `remotes`:
+
+```R
+devtools::install_github("https://github.com/HervePerdry/AMVCTpaper")
+```
+or 
+```R
+remotes::install_github("https://github.com/HervePerdry/AMVCTpaper")
+```
+
+It can then be loaded with 
+```{r}
+library(AMVCTpaper)
+```
+
+### Overview
+
+This package contains a set of functions to calculate the evolution and equilibrium values of quantities of interest
+under the AMVTC model (co-occurrence of Assortative Mating and Vertical Cultural Transmission) as described here:
+https://www.biorxiv.org/content/10.1101/2023.04.08.536101v3. This includes both theoretical calculations as well as the
+simple forward-time simulations detailed in the publication; as well as code to reproduce the main figures therein.
+
+#### Theoretical evolution equations
+
+The evolution of all parameters in the AMVTC model can be estimated with the function pop.evolution() for  a population
+which is initially at gametic equilibrium, without assortative mating. The function takes the following arguments
+
+|          | |
+|----------|--------------------------------------------------------------------------------------------|
+| `g0`     | Standard deviation of gametic value in a population without assortative mating  |
+| `e`      | Standard deviation of environmental effects  |
+| `r.ho`   | Correlation between mates   |
+| `nu`     | Correlation between parents' and offspring environmental effects  |
+| `N`      | Number of causal variants, all will have a minor-allele frequency of 0.5 and are unlinked  |
+| `nb.gen` | Number of generations  |
+
+
+The function returns a data frame with class "pop.evolution", with columns 
+
+|           | |
+|-----------| ---------------------------------------------------|
+| `t`       | the generation, from 0 to nb.gen                   |
+| `N.kappa` | the value of $N\overline\kappa(t)$ |
+| `g`       | the standard deviation of the gametic value $g(t)$ |
+| `r.ga`    | the gametic correlation, $r_ga(t)$   |
+| `rho`     | the gene-environment correlation $\rho(t)$ |
+| `a`       | the standard deviation of the genetic value $a(t)$ |
+| `sigma2`  | the variance of the phenotype, $\sigma^2(t)$ |
+
+Example:
+
+```{r}
+pop.evolution(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, N = 1e4, nb.gen = 10)
+```
+
+#### Equilibrium values
+
+While `pop.evolution()` gives the theoretical evolution of all parameters but not the equilibrium values. These are
+provided by the function `AMVCT()`, which calculated the theoretical equilibrium values of all parameters in the model, as
+well as the resulting correlations between various pairs of genetic and non-genetic components for members of a trio;
+described in Tables 1 and 2 in the publication. The function will solve the non-linear system of equations with the
+function `solve.a.rho()`. This function has arguments `h2.0`, `g0`, `e`, `r.ho`, and `nu`. The
+argument `h2.0` allow to give the value of the heritability in the initial population, without AM and VCT.
+All other arguments are similar to the arguments of `pop.evolution`.
+The user must provide either `g0` and `e`, or `h2.0`, but not both.
+
+`AMVCT()` returns an object of class `AMVCT`, which is a list with components g0`, `e`, `r.ho`, `nu`, `rho`, `a, `sigma2`,
+`r.ga`, `g`, `h2.SNP`, `decompose.sigma2`, `cor.mates` (corresponding to table 1 of the supplementary material)
+`cor.parent.offspring` (corresponding to table 2 of the supplementary material) `cor.pheno.parent.offspring` (correlation
+of the phenotypes of parent and offspring).
+
+Example:
+```{r}
+AMVCT(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4)
+```
+
+#### Forward time simulations
+
+The evolution of all parameters can also be estimated from a simple simulated population using pop.sim(), with a fixed
+size across generations, with both AM and VCT starting in generation zero. Here, we apply a simple model for forming M/2
+couples from the population of M individuals, each of which produce exactly 2 offspring in order to form the next
+generation; with all individuals having a simulated phenotype value following the AMVCT model. The function takes the
+the same arguments as `pop.evolution`, and a few new arguments:
+
+|              | |
+|--------------|---------------------|
+| pop.size     | Population size  |
+| digest       | Logical. Set to `TRUE` to send back only a digest of the results  |
+| keep.N.kappa | Logical. Set to `TRUE` to keep trace of $N \overline\kappa(t)$.  |
+
+Beware: setting `keep.N.kappa` to `TRUE` results in lengthy computations.
+
+This function will return, if `digest` is `TRUE`, a data frame similar to the result of `pop.evolution`, with an
+additional column for `e` which contain the sd of the environmental components at each generation (this fluctuates
+slightly around the value of the corresponding parameter, due to random sampling). If `digest` is `FALSE`, it returns a list with
+member `digest` (the digest as described before), `G` (the matrix of genotypes at the last generation), `A` (the genetic
+value at the last generation), `E` (the environmental value at the last generation), `P` (the phenotypes at the last
+generation).
+
+Example of a forward-time simulation over 20 generations, with N = 100 causal loci and a population of size 25,000:
+
+```{r}
+R <- pop.sim(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, pop.size = 25000, N = 100, nb.gen = 20, TRUE, TRUE)
+R
+```
+
+We can plot a comparison to the theoretical evolution values of `pop.evolution()` and equilibrium values of `AMVCT()`:
+```{r plots, fig.height = 6, fig.width = 6}
+ev <- pop.evolution(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, N = 100, nb.gen = 20) 
+limits <- AMVCT(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4)
+
+par(mfrow=c(2,2), cex = .7, mai = c(3,3,1,1)/5)
+## plotting evolution of rho
+plot(R$t, R$rho, type = "l", xlab = "t", ylab = expression(rho))
+lines(ev$t, ev$rho, col = "red")
+abline(h = limits$rho, col = "red", lty = 3)
+
+## plotting evolution of N kappa bar
+plot(R$t, R$N.kappa, type = "o", xlab = "t", ylab = expression(N * bar(kappa)))
+lines(ev$t, ev$N.kappa, col = "red")
+abline(h = 1/(1-limits$r.ga), col = "red", lty = 3)
+
+## plotting evolution of a
+plot(R$t, R$a, type = "o", xlab = "t", ylab = "a") 
+lines(ev$t, ev$a, col = "red")
+abline(h = limits$a, col = "red", lty = 3)
+
+## plotting evolution of r.ga
+plot(R$t, R$r.ga, type = "o", xlab = "t", ylab = expression(r[ga]))
+lines(ev$t, ev$r.ga, col =" red")
+abline(h = limits$r.ga, col = "red", lty = 3)
+```
+
+#### Recreating the plots in the article
+
+The directory `figures/` contains instruction and script fpr
+reproducing all figures in the paper.
+
+Running `simus-50.r` will re-generate the files `simus-50-N1000-pop100k.rds` and `simus-50-N1000-pop25k.rds` 
+that are needed for some of the figures.
+
+Running `figures-AMVCT-paper.r` will generate the figures.
+
+The files `multiple.pop.sim.r`, `fig.evol.r` and `fig.nu.r` contain functions definition that 
+are needed by `simus-50.r` and `figures-AMVCT-paper.r`.

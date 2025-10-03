@@ -12,7 +12,7 @@
 #' defined to have them printed nicely.
 #'
 #' @return an object of class 'AMVCT', which is a list with components
-#' 'g0', 'e', 'r.ho', 'nu', 'rho', 'a, 'sigma2', 'r.ga', 'g', 'h2.SNP',
+#' 'g0', 'e', 'r.ho', 'nu', 'rho', 'a', 'sigma2', 'r.ga', 'g', 'h2.SNP',
 #' 'decompose.sigma2', 'cor.mates' (corresponding to table 1 of the supplementary material)
 #' 'cor.parent.offspring' (corresponding to table 2 of the supplementary material)
 #' 'cor.pheno.parent.offspring' (correlation of the phenotypes of parent and offspring).
