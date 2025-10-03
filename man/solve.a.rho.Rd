@@ -24,7 +24,7 @@ computes \eqn{a} and \eqn{rho}.
 }
 \details{
 In the article text, 'r.ho' is denoted by \eqn{r_{ho}}{r_ho}.
-The system formed by the equations 41 and 42 from the supplementary material is solved
+The system formed by the equations 42 and 43 from the supplementary material is solved
 to get the values of \eqn{a} and \eqn{\rho}{rho} at equilibrium.
 
 The equations are solved numerically using the 'uniroot' function with default

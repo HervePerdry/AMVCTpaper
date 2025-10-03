@@ -23,7 +23,7 @@ pop.evolution(g0, e, r.ho, nu, N, nb.gen)
 A data frame with class "pop.evolution", with columns
 't' (the generation, from 0 to nb.gen), 'N.kappa' (the value of \eqn{N \overline\kappa(t)}{N kappa bar(t)}),
 'g' (the standard deviation of the gametic value, \eqn{g(t)}), 'r.ga' (the gametic correlation, \eqn{r_{ga}(t)}{r_ga(t)}), 
-'rho' (the gene-environment correlation, \eqn{\rho(t)}{rho(t)}), 'a' (the standard deviation of the genetic value, \eqn{g(t)}),
+'rho' (the gene-environment correlation, \eqn{\rho(t)}{rho(t)}), 'a' (the standard deviation of the genetic value, \eqn{a(t)}),
 and 'sigma2' (the variance of the phenotype, \eqn{sigma^2(t)}{sigma^2(t)}).
 
 The parameters 'g0', 'e', 'r.ho', 'nu' and 'N' are stored in an attribute named 'parameters'.

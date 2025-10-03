@@ -41,17 +41,17 @@
 #' abline(h = limits$rho, col = "red", lty = 3)
 #'
 #' # plotting evolution of N kappa bar
-#' plot(R$t, R$N.kappa, type = "o", xlab = "t", ylab = expression(N * bar(kappa)))
+#' plot(R$t, R$N.kappa, type = "l", xlab = "t", ylab = expression(N * bar(kappa)))
 #' lines(ev$t, ev$N.kappa, col = "red")
 #' abline(h = 1/(1-limits$r.ga), col = "red", lty = 3)
 #'
 #' # plotting evolution of a
-#' plot(R$t, R$a, type = "o", xlab = "t", ylab = "a") 
+#' plot(R$t, R$a, type = "l", xlab = "t", ylab = "a") 
 #' lines(ev$t, ev$a, col = "red")
 #' abline(h = limits$a, col = "red", lty = 3)
 #'
 #' # plotting evolution of r.ga
-#' plot(R$t, R$r.ga, type = "o", xlab = "t", ylab = expression(r[ga]))
+#' plot(R$t, R$r.ga, type = "l", xlab = "t", ylab = expression(r[ga]))
 #' lines(ev$t, ev$r.ga, col =" red")
 #' abline(h = limits$r.ga, col = "red", lty = 3)
 #'
