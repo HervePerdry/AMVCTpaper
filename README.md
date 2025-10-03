@@ -1,12 +1,3 @@
----
-title: AMVTC
-author: Anthony Herzig and Hervé Perdry
-version: 0.1
-date: "2025-10-03"
----
-
-
-
 ## Installation
 
 The package can be installed directly from github, using either `devtools` or `remotes`:
