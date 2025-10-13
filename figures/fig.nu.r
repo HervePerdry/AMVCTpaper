@@ -105,7 +105,7 @@ fig.nu.variance.comp <- function(h2.0 = 0.2, g0 = sqrt(h2.0/2), e = sqrt(1-h2.0)
   VAR <- VAR[,1:n]
 
   par(xpd = TRUE) # to write outside the frame
-  plot(NU, VAR[1,], type = "n", xlab = expression(nu), ylab = "", ylim = c(0,1), bty = "n", xaxt = "n", ...)
+  plot(NU, VAR[1,], type = "n", xlab = expression(nu), ylab = "variance decomposition", ylim = c(0,1), bty = "n", xaxt = "n", ...)
  
   polygon( c(NU, rev(NU)), c(VAR[1,], rep(0,n)), col = "gray50", border = NA)
   polygon( c(NU, rev(NU)), c(VAR[1,], rev(VAR[1,]+VAR[2,])), col = "gray70", border = NA)
