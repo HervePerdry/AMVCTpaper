@@ -15,10 +15,12 @@
 #' @details Will simulate a population under Assortative Mating and Vertical Cultural Transmission with the parameters
 #' supplied. Generations are non overlapping.
 #'
-#' @details All SNPs have maf = 0.5 and are unlinked. Mate pairs are formed and eachh pair has two offsprings.
+#' @details All SNPs unlinked. Their allele frequencies are drawn in a neutral site frequency spectrum, capped to [0.01, 0.99].
+#' Allelic effect are drawn in a normal distribution, and normalized in order to get a standard deviation of the gametic value
+#' equal to g0.
+#' Mate pairs are formed and each pair has two offsprings.
 #'
-#' @details Beware: setting 'keep.N.kappa' to 'TRUE' results
-#' in lengthy computations.
+#' @details Beware: setting 'keep.N.kappa' to 'TRUE' results in lengthy computations.
 #'
 #' @return if 'digest' is 'TRUE', a data frame similar to the result of 'pop.evolution', with an additional
 #' column for 'e' which contain the sd of the environmental components at each generation (this fluctuates
@@ -63,9 +65,9 @@ pop.sim <- function(g0, e, r.ho, nu, N = 100, nb.gen = 10, pop.size = 25000, dig
   # AF and beta... 
   m <- 0.01
   AF <- m * ((1 - m)/m)**runif(N)   # neutral site frequency spectrum, with m < AF < 1-m
-  beta <- rnorm(N)   # neutral trait : effect size are uncorrelated from MAF
-  gv <- sum(beta**2 * AF*(1-AF) ) # should be g0^2
-  beta <- beta * g0 / sqrt(gv)
+  beta <- rnorm(N)   # neutral trait: effect size are uncorrelated from MAF
+  gv <- sum(beta**2 * AF*(1-AF) ) # gametic variance should be g0^2
+  beta <- beta * g0 / sqrt(gv)    # now it is!
 
   # initial population [one individual by column, all SNPs have MAF = 0.5]
   # paternal and maternal haplotypes
@@ -84,8 +86,8 @@ pop.sim <- function(g0, e, r.ho, nu, N = 100, nb.gen = 10, pop.size = 25000, dig
   gvHp <- genomic.value(Hp, beta)
   gvHm <- genomic.value(Hm, beta)
   if(keep.N.kappa) {
-    DEL <- cor( rbind(t(Hp), t(Hm)) )
-    N.kappa <- sum(DEL)/N
+    KK <- cov( rbind(t(beta*Hp), t(beta*Hm)) ) / g0^2
+    N.kappa <- sum(KK)
   } else {
     N.kappa <- NA
   }
@@ -133,9 +135,8 @@ pop.sim <- function(g0, e, r.ho, nu, N = 100, nb.gen = 10, pop.size = 25000, dig
     gvH1m <- genomic.value(H1m, beta)
 
     if(keep.N.kappa) {
-      # DEL <- cor(t(H1)) # in fact could also be cor(rbind(t(H1),t(H2))), but this is lighter
-      DEL <- cor(rbind(t(H1), t(H2)))
-      N.kappa <- sum(DEL)/N
+      KK <- cov( rbind(t(beta*H1), t(beta*H2)) ) / g0^2
+      N.kappa <- sum(KK)
     } else {
       N.kappa <- NA
     }
