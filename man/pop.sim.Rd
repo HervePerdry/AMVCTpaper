@@ -50,10 +50,12 @@ Simulate the evolution of a population with Assortative Mating and Vertical Cult
 Will simulate a population under Assortative Mating and Vertical Cultural Transmission with the parameters
 supplied. Generations are non overlapping.
 
-All SNPs have maf = 0.5 and are unlinked. Mate pairs are formed and eachh pair has two offsprings.
+All SNPs unlinked. Their allele frequencies are drawn in a neutral site frequency spectrum, capped to [0.01, 0.99].
+Allelic effect are drawn in a normal distribution, and normalized in order to get a standard deviation of the gametic value
+equal to g0.
+Mate pairs are formed and each pair has two offsprings.
 
-Beware: setting 'keep.N.kappa' to 'TRUE' results
-in lengthy computations.
+Beware: setting 'keep.N.kappa' to 'TRUE' results in lengthy computations.
 }
 \examples{
 # a simulation with N = 100 loci only
