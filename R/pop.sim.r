@@ -60,13 +60,17 @@ pop.sim <- function(g0, e, r.ho, nu, N = 100, nb.gen = 10, pop.size = 25000, dig
   # size must be even
   pop.size <- (as.integer(pop.size) %/% 2L) * 2L
 
-  # betas for equal variance (MAF = 0.5)
-  beta <- rep( 1/sqrt(0.25*N), N ) * g0
+  # AF and beta... 
+  m <- 0.01
+  AF <- m * ((1 - m)/m)**runif(N)   # neutral site frequency spectrum, with m < AF < 1-m
+  beta <- rnorm(N)   # neutral trait : effect size are uncorrelated from MAF
+  gv <- sum(beta**2 * AF*(1-AF) ) # should be g0^2
+  beta <- beta * g0 / sqrt(gv)
 
   # initial population [one individual by column, all SNPs have MAF = 0.5]
   # paternal and maternal haplotypes
-  Hp <- matrix( rbinom(pop.size*N, 1, 0.5), ncol = pop.size )
-  Hm <- matrix( rbinom(pop.size*N, 1, 0.5), ncol = pop.size )
+  Hp <- matrix( rbinom(pop.size*N, 1, AF), ncol = pop.size )
+  Hm <- matrix( rbinom(pop.size*N, 1, AF), ncol = pop.size )
   # genotypes
   G <- Hp + Hm
   # genomic values
