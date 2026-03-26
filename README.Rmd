@@ -130,9 +130,11 @@ lines(ev$t, ev$rho, col = "red")
 abline(h = limits$rho, col = "red", lty = 3)
 
 ## plotting evolution of N kappa bar
-plot(R$t, R$N.kappa, type = "l", xlab = "t", ylab = expression(N * bar(kappa)))
+N.kappa.lim <- 1/(1-limits$r.ga)
+plot(R$t, R$N.kappa, type = "l", xlab = "t", ylab = expression(N * bar(kappa)), 
+     ylim = c(1, max(N.kappa.lim, R$N.kappa)))
 lines(ev$t, ev$N.kappa, col = "red")
-abline(h = 1/(1-limits$r.ga), col = "red", lty = 3)
+abline(h = N.kappa.lim, col = "red", lty = 3)
 
 ## plotting evolution of a
 plot(R$t, R$a, type = "l", xlab = "t", ylab = "a") 

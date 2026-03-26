@@ -38,7 +38,7 @@ gametic equilibrium, without assortative mating. The function takes the
 following arguments
 
 |          |                                                                                           |
-|----------|-------------------------------------------------------------------------------------------|
+| -------- | ----------------------------------------------------------------------------------------- |
 | `g0`     | Standard deviation of gametic value in a population without assortative mating            |
 | `e`      | Standard deviation of environmental effects                                               |
 | `r.ho`   | Correlation between mates                                                                 |
@@ -49,15 +49,15 @@ following arguments
 The function returns a data frame with class “pop.evolution”, with
 columns
 
-|           |                                                    |
-|-----------|----------------------------------------------------|
-| `t`       | the generation, from 0 to nb.gen                   |
-| `N.kappa` | the value of $N\overline\kappa(t)$                 |
-| `g`       | the standard deviation of the gametic value $g(t)$ |
-| `r.ga`    | the gametic correlation, $r_ga(t)$                 |
-| `rho`     | the gene-environment correlation $\rho(t)$         |
-| `a`       | the standard deviation of the genetic value $a(t)$ |
-| `sigma2`  | the variance of the phenotype, $\sigma^2(t)$       |
+|           |                                                                                                                                                                         |
+| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `t`       | the generation, from 0 to nb.gen                                                                                                                                        |
+| `N.kappa` | the value of ![N\\overline\\kappa(t)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;N%5Coverline%5Ckappa%28t%29 "N\\overline\\kappa(t)") |
+| `g`       | the standard deviation of the gametic value ![g(t)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;g%28t%29 "g(t)")                       |
+| `r.ga`    | the gametic correlation, ![r\_ga(t)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;r_ga%28t%29 "r_ga(t)")                                |
+| `rho`     | the gene-environment correlation ![\\rho(t)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Crho%28t%29 "\\rho(t)")                     |
+| `a`       | the standard deviation of the genetic value ![a(t)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;a%28t%29 "a(t)")                       |
+| `sigma2`  | the variance of the phenotype, ![\\sigma^2(t)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Csigma%5E2%28t%29 "\\sigma^2(t)")         |
 
 Example:
 
@@ -150,11 +150,11 @@ the next generation; with all individuals having a simulated phenotype
 value following the AMVCT model. The function takes the the same
 arguments as `pop.evolution`, and a few new arguments:
 
-|              |                                                                  |
-|--------------|------------------------------------------------------------------|
-| pop.size     | Population size                                                  |
-| digest       | Logical. Set to `TRUE` to send back only a digest of the results |
-| keep.N.kappa | Logical. Set to `TRUE` to keep trace of $N \overline\kappa(t)$.  |
+|              |                                                                                                                                                                                                          |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| pop.size     | Population size                                                                                                                                                                                          |
+| digest       | Logical. Set to `TRUE` to send back only a digest of the results                                                                                                                                         |
+| keep.N.kappa | Logical. Set to `TRUE` to keep trace of ![N \\overline\\kappa(t)](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;N%20%5Coverline%5Ckappa%28t%29 "N \\overline\\kappa(t)"). |
 
 Beware: setting `keep.N.kappa` to `TRUE` results in lengthy
 computations.
@@ -218,9 +218,11 @@ lines(ev$t, ev$rho, col = "red")
 abline(h = limits$rho, col = "red", lty = 3)
 
 ## plotting evolution of N kappa bar
-plot(R$t, R$N.kappa, type = "l", xlab = "t", ylab = expression(N * bar(kappa)))
+N.kappa.lim <- 1/(1-limits$r.ga)
+plot(R$t, R$N.kappa, type = "l", xlab = "t", ylab = expression(N * bar(kappa)), 
+     ylim = c(1, max(N.kappa.lim, R$N.kappa)))
 lines(ev$t, ev$N.kappa, col = "red")
-abline(h = 1/(1-limits$r.ga), col = "red", lty = 3)
+abline(h = N.kappa.lim, col = "red", lty = 3)
 
 ## plotting evolution of a
 plot(R$t, R$a, type = "l", xlab = "t", ylab = "a") 
@@ -233,7 +235,7 @@ lines(ev$t, ev$r.ga, col =" red")
 abline(h = limits$r.ga, col = "red", lty = 3)
 ```
 
-![](figure/plots-1.png)<!-- -->
+![](README_files/figure-gfm/plots-1.png)<!-- -->
 
 #### Recreating the plots in the article
 
