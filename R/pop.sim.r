@@ -30,6 +30,7 @@
 #' generation), 'P' (the phenotypes at the last generation).
 #'
 #' @examples # a simulation with N = 100 loci only
+#' set.seed(3)
 #' R <- pop.sim(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, pop.size = 25000, N = 100, nb.gen = 20, TRUE, TRUE)
 #' # theoretical evolution
 #' ev <- pop.evolution(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, N = 100, nb.gen = 20) 
@@ -66,15 +67,15 @@ pop.sim <- function(g0, e, r.ho, nu, N = 100, nb.gen = 10, pop.size = 25000, dig
   m <- 0.01
   AF <- m * ((1 - m)/m)**runif(N)   # neutral site frequency spectrum, with m < AF < 1-m
   beta <- rnorm(N)   # neutral trait: effect size are uncorrelated from MAF
-  gv <- sum(beta**2 * AF*(1-AF) ) # gametic variance should be g0^2
-  beta <- beta * g0 / sqrt(gv)    # now it is!
+  gvar <- sum(beta**2 * AF*(1-AF) ) # gametic variance should be g0^2
+  beta <- beta * g0 / sqrt(gvar)    # now it is!
 
   # initial population [one individual by column, all SNPs have MAF = 0.5]
-  # paternal and maternal haplotypes
-  Hp <- matrix( rbinom(pop.size*N, 1, AF), ncol = pop.size )
-  Hm <- matrix( rbinom(pop.size*N, 1, AF), ncol = pop.size )
+  # paternal and maternal gametes
+  Gp <- matrix( rbinom(pop.size*N, 1, AF), ncol = pop.size )
+  Gm <- matrix( rbinom(pop.size*N, 1, AF), ncol = pop.size )
   # genotypes
-  G <- Hp + Hm
+  G <- Gp + Gm
   # genomic values
   A <- genomic.value(G, beta) # variance 2g0^2
   # environmental values
@@ -82,39 +83,39 @@ pop.sim <- function(g0, e, r.ho, nu, N = 100, nb.gen = 10, pop.size = 25000, dig
   # phenotypes
   P <- A + E
 
-  # gametic value of parental gametes
-  gvHp <- genomic.value(Hp, beta)
-  gvHm <- genomic.value(Hm, beta)
+  # genomic value of parental gametes
+  gv.Gp <- genomic.value(Gp, beta)
+  gv.Gm <- genomic.value(Gm, beta)
   if(keep.N.kappa) {
-    KK <- cov( rbind(t(beta*Hp), t(beta*Hm)) ) / g0^2
+    KK <- cov( rbind(t(beta*Gp), t(beta*Gm)) ) / g0^2
     N.kappa <- sum(KK)
   } else {
     N.kappa <- NA
   }
 
-  R <- data.frame(e = sd(E), N.kappa = N.kappa, g = sd(A)/sqrt(2), r.ga = cor(gvHp, gvHm), rho = cor(A, E), a = sd(A), sigma2 = var(P))
+  R <- data.frame(e = sd(E), N.kappa = N.kappa, g = sd(A)/sqrt(2), r.ga = cor(gv.Gp, gv.Gm), rho = cor(A, E), a = sd(A), sigma2 = var(P))
 
-  for(i in 1:nb.gen) {
+  for(i in seq_len(nb.gen)) {
     # make mate pairs
     pairs <- mate.pairs(P, r.ho)
 
     # gametes for 1st offspring
-    H1 <- gametes(G)
-    H1p <- H1[, pairs$I1, drop = FALSE] 
-    H1m <- H1[, pairs$I2, drop = FALSE]
+    G1 <- gametes(G)
+    G1p <- G1[, pairs$I1, drop = FALSE] 
+    G1m <- G1[, pairs$I2, drop = FALSE]
 
     # gametes for 2nd offspring
-    H2 <- gametes(G)
-    H2p <- H2[, pairs$I1, drop = FALSE] 
-    H2m <- H2[, pairs$I2, drop = FALSE]
+    G2 <- gametes(G)
+    G2p <- G2[, pairs$I1, drop = FALSE] 
+    G2m <- G2[, pairs$I2, drop = FALSE]
 
     # new matrix of genotypes
-    G <- cbind(H1p + H1m, H2p + H2m )
+    G <- cbind(G1p + G1m, G2p + G2m )
 
     # Environment of offspring
     Ep <- E[pairs$I1]  # E of father
     Em <- E[pairs$I2]  # E of mother
-    cpm <- cor(Ep, Em)
+    cpm <- cor(Ep, Em) # r_{E1 E2}
     cx <- nu/(1 + cpm)
     sdres <- sqrt(1 - 2*nu**2/(1 + cpm))*e
     E1 <- cx*(Ep + Em) + rnorm(pop.size/2, sd = sdres) # environment of offspring 1
@@ -130,18 +131,18 @@ pop.sim <- function(g0, e, r.ho, nu, N = 100, nb.gen = 10, pop.size = 25000, dig
     # this is now the population
     A <- Ao; P <- Po; E <- Eo
     
-    # the genomic values
-    gvH1p <- genomic.value(H1p, beta)
-    gvH1m <- genomic.value(H1m, beta)
+    # the genomic values of the gametes (to compute r.ga)
+    gv.G1p <- genomic.value(G1p, beta)
+    gv.G1m <- genomic.value(G1m, beta)
 
     if(keep.N.kappa) {
-      KK <- cov( rbind(t(beta*H1), t(beta*H2)) ) / g0^2
+      KK <- cov( rbind(t(beta*G1), t(beta*G2)) ) / g0^2
       N.kappa <- sum(KK)
     } else {
       N.kappa <- NA
     }
 
-    R <- rbind(R, data.frame(e = sd(E), N.kappa = N.kappa, g = sd(c(gvH1p, gvH1m)), r.ga = cor(gvH1p, gvH1m), rho = cor(A, E), a = sd(A), sigma2 = var(P)))
+    R <- rbind(R, data.frame(e = sd(E), N.kappa = N.kappa, g = sd(c(gv.G1p, gv.G1m)), r.ga = cor(gv.G1p, gv.G1m), rho = cor(A, E), a = sd(A), sigma2 = var(P)))
   } 
 
   R <- cbind(t = 0:nb.gen, R)
@@ -179,6 +180,7 @@ mate.pairs <- function(P, r) {
 
 # gametes. Tous les locis sont indépendants.
 # G : une matrice de genotypes
+# renvoie un gamète par génotype présent.
 gametes <- function(G) {
   N <- nrow(G)
   ps <- ncol(G)

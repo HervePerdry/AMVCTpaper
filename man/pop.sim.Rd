@@ -59,6 +59,7 @@ Beware: setting 'keep.N.kappa' to 'TRUE' results in lengthy computations.
 }
 \examples{
 # a simulation with N = 100 loci only
+set.seed(3)
 R <- pop.sim(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, pop.size = 25000, N = 100, nb.gen = 20, TRUE, TRUE)
 # theoretical evolution
 ev <- pop.evolution(g0 = sqrt(0.5), e = 1, r.ho = 0.6, nu = 0.4, N = 100, nb.gen = 20) 
